@@ -1,3 +1,8 @@
+// Culiacan, Sinaloa 9/18/2023
+//El siguiente proyecto fue creado por el estudiante de maestria Mario Enrique Cervantes Loyola
+//Contiene el juego de la vida de conway en el cual se crea un tablero con celulas vivas o muertas y al aplicarle 
+//ciertas reglas se sabra si continuara viviendo o no
+
 package Juegodelavida;
 
 import java.util.Scanner;
@@ -35,14 +40,32 @@ public class JuegoDeLaVida {
 	        for (int generacion = 1; generacion <= gen; generacion++) {
 	            System.out.println("Generación " + generacion + ":");
 	            System.out.println(tablero.toString());
-	            tablero.calcularSiguienteGeneracion();//llamada al metodo siguienteGeneracion
+	            tablero.calcularSiguienteGeneracion();
+
+	            // Verificar si no hubo cambios en dos generaciones consecutivas
+	            if (tablero.getGeneracionesSinCambios() >= 2) {
+	                System.out.println("No hubo cambios.");
+	                break; // Salir del bucle
+	            }
+
+	            // Verificar si no quedan células vivas
+	            if (tablero.noQuedanCelulasVivas()) {
+	                System.out.println("No quedan células vivas.");
+	                break; // Salir del bucle
+	            }
+
 	            System.out.println("Presione Enter para continuar a la siguiente generación...");
-	            scanner.nextLine();
 	            scanner.nextLine(); // Esperar a que el usuario presione Enter
+	            scanner.nextLine(); // Esperar a que el usuario presione Enter nuevamente
 	        }
 
 	        scanner.close();
-
+	    }
 	}
+	
 
-}
+
+
+
+
+

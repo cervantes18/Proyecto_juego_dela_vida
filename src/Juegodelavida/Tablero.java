@@ -6,13 +6,16 @@ public class Tablero {
 	private int nf;  //declaracion de variable "nf" numero de filas
     private int nc; //declaracion de variable "nc" numero de columnas
     private boolean[][] celulas; //declaracion de matriz para representar las celulas
-
+    private boolean[][] generacionAnterior;
+    public int contador = 0;
     
     //constructor 
     public Tablero(int nf, int nc) {
         this.nf = nf;
         this.nc = nc;
         this.celulas = new boolean[nf][nc];
+        this.generacionAnterior = new boolean[nf][nc];
+        this.contador = contador;
     }
    // metodo setCelulaViva para indicar la posicion de las celulas vivas durante la primer generacion.
     public void setCelulaViva(int fila, int columna) {
@@ -22,17 +25,15 @@ public class Tablero {
     //metodo calcularSiguienteGeneracion
     public void calcularSiguienteGeneracion() {
         boolean[][] nuevaGeneracion = new boolean[nf][nc];
-      //bucle para recorrer tablero
+        
+
         for (int i = 0; i < nf; i++) {
             for (int j = 0; j < nc; j++) {
-            	//llamada al metodo contarVecinosVivos
                 int vecinosVivos = contarVecinosVivos(i, j);
-               //revision de aptitud de vivir de celulas(si tiene 2 vecinos o 3 sigue viviendo)
                 if (celulas[i][j]) {
                     if (vecinosVivos == 2 || vecinosVivos == 3) {
                         nuevaGeneracion[i][j] = true;
                     }
-                 // si esta muerta pero tiene 3 vecinos vive en la siguiente generacion   
                 } else {
                     if (vecinosVivos == 3) {
                         nuevaGeneracion[i][j] = true;
@@ -41,8 +42,47 @@ public class Tablero {
             }
         }
 
+        // Comprobar si la nueva generación es igual a la generación anterior
+        if (compararGeneraciones(celulas, generacionAnterior)) {
+            
+            contador ++;
+        }
+
         celulas = nuevaGeneracion;
+
+        // Almacenar la generación actual como generación anterior
+        for (int i = 0; i < nf; i++) {
+            System.arraycopy(celulas[i], 0, generacionAnterior[i], 0, nc);
+        }
     }
+
+    // Método para comparar dos generaciones
+    private boolean compararGeneraciones(boolean[][] gen1, boolean[][] gen2) {
+        for (int i = 0; i < nf; i++) {
+            for (int j = 0; j < nc; j++) {
+                if (gen1[i][j] != gen2[i][j]) {
+                    return false; // Hay al menos un cambio
+                }
+            }
+        }
+        return true; // Las generaciones son idénticas
+    }
+    
+
+    // Agregar un método para verificar si no quedan células vivas
+    public boolean noQuedanCelulasVivas() {
+        for (int i = 0; i < nf; i++) {
+            for (int j = 0; j < nc; j++) {
+                if (celulas[i][j]) {
+                    return false; // Si encuentra al menos una célula viva, retorna false
+                }
+            }
+        }
+        return true; // Si no encuentra células vivas, retorna true
+    }
+
+
+
      //metodo para contar vecinos vivos
     //al metodo se le pasan las coordenadas de la celula en la que se encuentra el cursor actualmente
     private int contarVecinosVivos(int fila, int columna) {
@@ -88,4 +128,7 @@ public class Tablero {
         //el objeto "sb" se regresa como cadena
         return sb.toString();
     }
+	public int getGeneracionesSinCambios() {
+		return contador;
+	}
 }
